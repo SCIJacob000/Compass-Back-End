@@ -10,8 +10,8 @@ https://developer.nps.gov/api/v1/alerts?api_key={apiKey}
 This is an example of an api call that would be used for a by state search! this call returns all natl parks that reside in the state of the given state code!
 https://developer.nps.gov/api/v1/parks?api_key={apiKey}&stateCode=IL
 
-This endpoint will be used to fuel natl park the seach bar
-https://developer.nps.gov/api/v1/parks?api_key=\{apiKey}=Badland
+This endpoint will be used to fuel natl park for the seach bar
+https://developer.nps.gov/api/v1/parks?api_key=\{apiKey}q=Badland
 
 
 
