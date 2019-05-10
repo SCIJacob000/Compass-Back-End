@@ -14,6 +14,10 @@ const PORT = process.env.PORT
 
 //require controllers
 
+const userController = require('./controllers/userController')
+const parkController = require('./controllers/parkController')
+const tripController = require('./controllers/tripController')
+
 //middlewares
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(methodOverride('_method'));
