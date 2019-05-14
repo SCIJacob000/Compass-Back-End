@@ -1,24 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
 const cors = require('cors')
 const session = require('express-session')
 const app = express();
 require('dotenv').config()
 const superagent = require('superagent');
 
+const PORT = process.env.PORT;
 //require db
 require ('./db/db.js')
 
 
-const PORT = process.env.PORT;
-
-//require controllers
-
 
 //middlewares
-// app.use(bodyParser.urlencoded({extended:false}));
-
 app.use(bodyParser.json())
 
 app.use(session({
@@ -27,22 +21,19 @@ app.use(session({
 	saveUninitialized: false
 }))
 
+//require controllers
 const userController = require('./controllers/userController')
 const parkController = require('./controllers/parkController')
 const tripController = require('./controllers/tripController')
+const noteController = require('./controllers/noteController')
 
 
 app.use('/users', userController);
 app.use('/parks', parkController);
+app.use('/trips', tripController);
+app.use('/notes', noteController);
 
-// this will be refactored to account for the logged in features!
-// app.use((req,res, next) => {
-// 	if (!req.session.logged) {
-// 		res.redirect('/users/login')
-// 	} else{
-// 		next()
-// 	}
-// })
+
 
 //Get/alerts this route gets all alerts for all nat parks
 
@@ -50,7 +41,7 @@ app.get('/alerts', (req,res,next)=>{
 	superagent.get('https://developer.nps.gov/api/v1/alerts?api_key=' + process.env.API_KEY)
 	.then((data)=>{
 
-		const actualData = data.body.data//.data.articles.map(a => a.author)
+		const actualData = data.body.data
       	const justTheDataWeNeed = actualData.map(article => {
       		return {
 		         title: article.title,
@@ -71,15 +62,6 @@ app.get('/alerts', (req,res,next)=>{
 		})
 	})
 })
-
-
-
-
-
-
-
-
-
 
 
 

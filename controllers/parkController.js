@@ -4,7 +4,10 @@ require('dotenv').config()
 const superagent = require('superagent');
 const Parks = require('../models/Parks')
 const Trip = require('../models/Trip')
-//as of current this is only getting 50 of the 496 parks due to a preset limit query param
+const Note = require('../models/Trip')
+
+
+//as of current this is only getting 50 of the 496 parks due to a preset limit query param !!!!!!!!!!!
 //Get/parks/ this route is going to get the name lat and long for all natl parks as well as any notes saved to my db for that park
 // router.get('/', (req,res, next)=>{
 // 	superagent.get('https://developer.nps.gov/api/v1/parks?api_key=' + process.env.API_KEY)
@@ -47,6 +50,27 @@ const Trip = require('../models/Trip')
 // 	})
 // })
 
+// Post/notes this route will allow users to make notes on their recent experience assigned to specific park!!!
+router.post('/:id', async (req,res,next)=>{
+	try{
+		const createdNote = await Note.create(req.body)
+		const foundPark = await Parks.findById(req.params.id)
+		await createdNote.save()
+		foundPark.notes.push(createdNote)
+		await foundPark.save()
+		res.status(200).json({
+			status: 200,
+			data: createdNote
+		})
+	}catch(error){
+		res.status(400).json({
+			status: 400,
+			error: error
+		})
+	}
+})
+
+//
 
 //get/parks/{parkCode}this calls the api to get all the info on a certain nat park
 router.get('/:id', (req,res)=>{
@@ -97,17 +121,6 @@ router.get('/:id', (req,res)=>{
 
 
 
-//post/ this route will add a park to a trip 
-
-
-
-
-
-
-
-
-
-//delete this route will delete a park off a trip
 
 
 
