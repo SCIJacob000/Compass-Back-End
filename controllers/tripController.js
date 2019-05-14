@@ -27,7 +27,25 @@ router.post('/', async(req,res)=>{
 
 
 //delete this route will delete a trip from the logged in user hint: same as above!
-router.delete()
+router.delete('/:id', async(req,res)=>{
+	try{
+		const deletedTrip = await Trip.findByIdAndRemove(req.params.id)
+		const foundUser = await User.findOne({'trips': req.params.id})
+		await foundUser.trips.remove(req.params.id)
+		await foundUser.save()
+		res.status(200).json({
+			status: 200,
+			data: deletedTrip
+		})
+
+	}
+	catch(error){
+		res.status(400).json({
+			status: 400,
+			error: error
+		})
+	}
+})
 
 
 //not sure if this post is the right thing to do!!!!
@@ -35,9 +53,13 @@ router.delete()
 router.post('/:id', async(req,res)=>{
 	try{
 		const foundTrip = await Trip.findById(req.params.id)
-		const foundPark = await Parks.findById(req.params.id)
+		const foundPark = await Parks.findById(req.params.id)// this is def not right !!!!
 		foundTrip.parks.push(foundPark)
 		await foundTrip.save()
+		res.status(200).json({
+			status: 200,
+			data: foundTrip
+		})
 	}
 	catch(error){
 		res.status(400).json({
@@ -49,5 +71,6 @@ router.post('/:id', async(req,res)=>{
 
 
 //delete this route will delete a park off a trip
+//not sure how to go about this route!
 
 module.exports = router;
