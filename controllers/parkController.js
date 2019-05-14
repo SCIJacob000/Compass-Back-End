@@ -50,6 +50,23 @@ const Note = require('../models/Trip')
 // 	})
 // })
 
+//Get/ this route gets all info on all parks in a user specified state
+router.get('/', (req,res)=>{
+	let searchTerm = req.body.searchTerm
+	superagent.get(`https://developer.nps.gov/api/v1/parks?stateCode=${searchTerm}api_key=${process.env.API_KEY}`)
+	.then((data)=>{
+		res.status(200).json({
+			status: 200,
+			data: JSON.parse(data)
+		})
+	}).catch((error)=>{
+		res.status(400).json({
+			status: 400,
+			error: error
+		})
+	})
+})
+
 // Post/notes this route will allow users to make notes on their recent experience assigned to specific park!!!
 router.post('/:id', async (req,res,next)=>{
 	try{
@@ -97,9 +114,9 @@ router.get('/:id', (req,res)=>{
 })
 
 
-router.get('/:id', (req,res)=>{
+router.get('/:id/campgrounds', (req,res)=>{
 	Parks.findById(req.params.id, (error, foundPark)=>{
-		superagent.get(`https://developer.nps.gov/api/v1/campgrounds?parkCode=${foundPark.parkCode}&api_key=${process.env.API_KEY}`)
+		superagent.get(``)
 			.then((data)=>{
 				res.status(200).json({
 					status: 200,

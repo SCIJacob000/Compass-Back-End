@@ -50,12 +50,39 @@ router.delete('/:id', async(req,res)=>{
 
 //not sure if this post is the right thing to do!!!!
 //post/ this route will add a park to a trip  
-router.post('/:id', async(req,res)=>{
+router.post('/:id', async (req, res) => {
 	try{
+		const parkCode = req.body.parkCode
 		const foundTrip = await Trip.findById(req.params.id)
-		const foundPark = await Parks.findById(req.params.id)// this is def not right !!!!
-		foundTrip.parks.push(foundPark)
+
+		// let created park;
+		// in db?
+		// if not create it, 
+		if(Park.findOne('parkCode': parkCode)){
+			const createdPark = Park.findOne('parkCode': parkCode)
+
+		}
+		else{
+			let createdPark = {}
+			const createdPark = await superagent.get(`https://developer.nps.gov/api/v1/campgrounds?parkCode=${parkCode}&api_key=${process.env.API_KEY}`)
+			.then((data)=>{
+			let createdPark = data
+				res.status(200).json({
+					status: 200,
+					data: createdPark
+				})
+			}).catch((error)=>{
+				res.status(400).json({
+					status: 400,
+					error: error
+				})
+			})
+		}
+		if(foundTrip){
+			foundTrip.parks.push(createdPark)
+		}
 		await foundTrip.save()
+
 		res.status(200).json({
 			status: 200,
 			data: foundTrip
@@ -69,8 +96,35 @@ router.post('/:id', async(req,res)=>{
 	}
 })
 
-
+// router.delete('/:id/park/:parkId')
+// const foundTrip = Trip.findById(req.params.id)
+// const foundPark = Park.findById(req.params.parkId)
+//trips/stops/:{parkId}
 //delete this route will delete a park off a trip
 //not sure how to go about this route!
+//find trip using req.params
+router.delete('/:id/park/:parkId', async(req,res)=>{
+	try{
+		const foundTrip = await Trip.findById(req.params.id)
+		const foundPark = await Park.findById(req.params.parkId)
+		await foundTrip.parks.remove(foundPark)
+		await foundTrip.save()
+		res.status(200).json({
+			status: 200,
+			data: foundTrip
+		})
+	}
+	catch(error){
+		res.status(400).json({
+			status: 400,
+			error: error
+		})
+	}
+
+})
+
+
+
+
 
 module.exports = router;
