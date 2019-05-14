@@ -8,6 +8,10 @@ const User = require('../models/User')
 router.post('/', async(req,res)=>{
 	try{
 		const createdTrip = await Trip.create(req.body)
+		const foundUser = await User.findById(req.session.userDbId)
+		foundUser.trips.push(createdTrip)
+		await foundUser.save()
+		await createdTrip.save()
 		res.status(200).json({
 			status: 200,
 			data: createdTrip
@@ -23,13 +27,17 @@ router.post('/', async(req,res)=>{
 
 
 //delete this route will delete a trip from the logged in user hint: same as above!
+router.delete()
 
 
-
-//put/ this route will add a park to a trip  !!!!need help with this one!!!!
-router.put('/:id', async(req,res)=>{
+//not sure if this post is the right thing to do!!!!
+//post/ this route will add a park to a trip  
+router.post('/:id', async(req,res)=>{
 	try{
-
+		const foundTrip = await Trip.findById(req.params.id)
+		const foundPark = await Parks.findById(req.params.id)
+		foundTrip.parks.push(foundPark)
+		await foundTrip.save()
 	}
 	catch(error){
 		res.status(400).json({

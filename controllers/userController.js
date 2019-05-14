@@ -11,21 +11,14 @@ router.post('/register', async (req,res,next)=>{
 	try{
 		const password = req.body.password
 		const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
-
 		const userDBEntry = {};
-
 		userDBEntry.username = req.body.username
 		userDBEntry.password = passwordHash
-
-
-
-	
 		const createdUser = await User.create(userDBEntry);
-		
-		req.session.logged = true
-		req.session.username = userDBEntry.username
-
 		await createdUser.save()
+		req.session.userDbId= createdUser._id
+		req.session.logged = true
+		req.session.username = createdUser.username
 		res.json({
 			status: 200,
 			data: createdUser
