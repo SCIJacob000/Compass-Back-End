@@ -25,7 +25,7 @@ router.post('/register', async (req,res,next)=>{
 		req.session.logged = true
 		req.session.username = userDBEntry.username
 
-
+		await createdUser.save()
 		res.json({
 			status: 200,
 			data: createdUser
@@ -46,9 +46,9 @@ router.post('/register', async (req,res,next)=>{
 router.post('/login', async(req,res)=>{
 	try{
 		const foundUser = await User.findOne({'username': req.body.username})
-
+		console.log(foundUser)
 		if(foundUser !== null){
-			if(bcrypt.compareSync(req.body.password, foundUser.password)=== true){
+			if(bcrypt.compareSync(req.body.password, foundUser.password) === true){
 				req.session.logged = true;
 				req.session.username = foundUser._id
 				res.status(200).json({
@@ -58,8 +58,9 @@ router.post('/login', async(req,res)=>{
 			}
 			else{
 				res.status(400).json({
-				status: 400,
-				data: "Invalid Login Params"
+					status: 400,
+					data: "Invalid Login Params",
+					wut: "bad pass"
 
 				})
 			}
@@ -67,7 +68,8 @@ router.post('/login', async(req,res)=>{
 		else{
 			res.status(400).json({
 				status: 400,
-				data: "Invalid Login Params"
+				data: "Invalid Login Params",
+				wut: "no user"
 			})
 		}
 	}catch(error){

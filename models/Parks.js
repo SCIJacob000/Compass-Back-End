@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 
 
 const parkSchema = new mongoose.Schema({
-	name: {type: String, unique: true, required: true},
+	name: {type: String},
+	parkCode: String,
+	latLong: {type: String},
 	notes: [String]
 })
 

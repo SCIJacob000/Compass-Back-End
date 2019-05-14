@@ -11,13 +11,14 @@ const superagent = require('superagent');
 require ('./db/db.js')
 
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
 
 //require controllers
 
 
 //middlewares
-app.use(bodyParser.urlencoded({extended:false}));
+// app.use(bodyParser.urlencoded({extended:false}));
+
 app.use(bodyParser.json())
 
 app.use(session({
@@ -32,6 +33,7 @@ const tripController = require('./controllers/tripController')
 
 
 app.use('/users', userController);
+app.use('/parks', parkController);
 
 // this will be refactored to account for the logged in features!
 // app.use((req,res, next) => {
