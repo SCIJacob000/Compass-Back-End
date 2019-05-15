@@ -16,7 +16,8 @@ router.post('/register', async (req,res,next)=>{
 		userDBEntry.username = req.body.username
 		userDBEntry.password = passwordHash
 		const createdUser = await User.create(userDBEntry);
-		await createdUser.save()
+		// await createdUser.save()
+		console.log(createdUser);
 		req.session.userDbId= createdUser._id
 		req.session.logged = true
 		req.session.username = createdUser.username
@@ -41,6 +42,7 @@ router.post('/login', async(req,res)=>{
 	console.log(req.body);
 	try{
 		const foundUser = await User.findOne({'username': req.body.username})
+		console.log("\nhere is foundUser in login:")
 		console.log(foundUser)
 		if(foundUser !== null){
 			if(bcrypt.compareSync(req.body.password, foundUser.password) === true){
