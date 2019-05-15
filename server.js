@@ -17,17 +17,16 @@ app.use(bodyParser.json())
 
 
 app.use(session({
-	secret:process.env.SESSION_SECRET,
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false
 }))
 
 //cors middleware
 const corsOptions = {
-	origin: process.env.CLIENT_URL,
+	origin: process.env.CLIENT_URL, 
 	credentials: true,
 	optionsSuccessStatus: 200
-
 }
 
 app.use(cors(corsOptions))
