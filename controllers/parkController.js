@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config()
 const superagent = require('superagent');
-const Parks = require('../models/Parks')
-const Trip = require('../models/Trip')
-const Note = require('../models/Trip')
+const Park = require('../models/park')
+const Trip = require('../models/trip')
+const Note = require('../models/note')
 
 
 //as of current this is only getting 50 of the 496 parks due to a preset limit query param !!!!!!!!!!!
@@ -71,7 +71,7 @@ router.get('/', (req,res)=>{
 router.post('/:id', async (req,res,next)=>{
 	try{
 		const createdNote = await Note.create(req.body)
-		const foundPark = await Parks.findById(req.params.id)
+		const foundPark = await Park.findById(req.params.id)
 		await createdNote.save()
 		foundPark.notes.push(createdNote)
 		await foundPark.save()
@@ -91,7 +91,7 @@ router.post('/:id', async (req,res,next)=>{
 
 //get/parks/{parkCode}this calls the api to get all the info on a certain nat park
 router.get('/:id', (req,res)=>{
-		Parks.findById(req.params.id, (error, foundPark)=>{
+		Park.findById(req.params.id, (error, foundPark)=>{
 			if(error){
 				res.send(error)
 			}
@@ -115,7 +115,7 @@ router.get('/:id', (req,res)=>{
 
 
 router.get('/:id/campgrounds', (req,res)=>{
-	Parks.findById(req.params.id, (error, foundPark)=>{
+	Park.findById(req.params.id, (error, foundPark)=>{
 		superagent.get(``)
 			.then((data)=>{
 				res.status(200).json({

@@ -15,17 +15,28 @@ require ('./db/db.js')
 //middlewares
 app.use(bodyParser.json())
 
+
 app.use(session({
 	secret:process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false
 }))
 
+//cors middleware
+const corsOptions = {
+	origin: 'http://localhost:3000',
+	credentials: true,
+	optionsSuccessStatus: 200
+
+}
+
+app.use(cors(corsOptions))
+
 //require controllers
-const userController = require('./controllers/userController')
-const parkController = require('./controllers/parkController')
-const tripController = require('./controllers/tripController')
-const noteController = require('./controllers/noteController')
+const userController = require('./controllers/userController');
+const parkController = require('./controllers/parkController');
+const tripController = require('./controllers/tripController');
+const noteController = require('./controllers/noteController');
 
 
 app.use('/users', userController);

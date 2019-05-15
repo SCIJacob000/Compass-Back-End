@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Park = require('./Parks')
+const Park = require('./park')
 
 
 const tripSchema = new mongoose.Schema({

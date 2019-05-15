@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Parks = require('../models/Parks')
-const Note = require('../models/notes')
+const Park = require('../models/park')
+const Note = require('../models/note')
 
 
 
@@ -10,7 +10,7 @@ const Note = require('../models/notes')
 
 
 // Put/notes/:id/edit this route allows users to update their notes on their experiences
-router.put('/:id', (req,res)=>{
+router.put('/:id', async (req,res)=>{
 	try{
 		const updatedNote = await Note.findByIdAndUpdate(req.params.id, req.body, {new: true})
 		res.status(200).json({
@@ -32,7 +32,7 @@ router.put('/:id', (req,res)=>{
 router.delete('/:id', async (req,res)=>{
 	try{
 		const deletedNote = await Note.findByIdAndRemove(req.params.id)
-		const foundPark = await Parks.findOne({'notes': req.params.id})
+		const foundPark = await Park.findOne({'notes': req.params.id})
 		await foundPark.notes.remove(req.params.id)
 		await foundPark.save()
 		res.status(200).json({

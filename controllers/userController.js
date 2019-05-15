@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 
 // Post/register this route will allow users to register an acct.
 router.post('/register', async (req,res,next)=>{
+	console.log(req.body);
 	try{
 		const password = req.body.password
 		const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
@@ -21,7 +22,7 @@ router.post('/register', async (req,res,next)=>{
 		req.session.username = createdUser.username
 		res.json({
 			status: 200,
-			data: createdUser
+			data: "login successful"
 		})
 	}catch(error){
 		req.session.message = "Username or Password is incorrect!"
@@ -37,6 +38,7 @@ router.post('/register', async (req,res,next)=>{
 // Post/login this route allows returning users to log back in
 
 router.post('/login', async(req,res)=>{
+	console.log(req.body);
 	try{
 		const foundUser = await User.findOne({'username': req.body.username})
 		console.log(foundUser)
@@ -78,10 +80,12 @@ router.post('/login', async(req,res)=>{
 // Delete/logout this route allows users to logout/destroys session
 
 router.get('/logout', async(req,res)=>{
+	console.log("logout success!");
 	try{
 		const destroyedSession = await req.session.destroy()
 		res.status(200).json({
-				status: 200
+				status: 200,
+				data: "logout successful"
 			})
 			
 		}catch(error){
