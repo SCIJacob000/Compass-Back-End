@@ -5,7 +5,6 @@ const Note = require('./note')
 const parkSchema = new mongoose.Schema({
 	name: {type: String},
 	parkCode: String,
-	latLong: {type: String},
 	notes: [String]
 })
 
