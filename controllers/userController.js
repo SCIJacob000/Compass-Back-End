@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user')
 const bcrypt = require('bcryptjs');
+const session = require('express-session')
 
 
 
@@ -16,11 +17,11 @@ router.post('/register', async (req,res,next)=>{
 		userDBEntry.username = req.body.username
 		userDBEntry.password = passwordHash
 		const createdUser = await User.create(userDBEntry);
-		// await createdUser.save()
 		console.log(createdUser);
 		req.session.userDbId= createdUser._id
 		req.session.logged = true
 		req.session.username = createdUser.username
+	
 		res.json({
 			status: 200,
 			data: "login successful"
@@ -47,7 +48,9 @@ router.post('/login', async(req,res)=>{
 		if(foundUser !== null){
 			if(bcrypt.compareSync(req.body.password, foundUser.password) === true){
 				req.session.logged = true;
-				req.session.username = foundUser._id
+				req.session.userDbId = foundUser._id
+					console.log("this is req.session");
+					console.log(req.session);
 				res.status(200).json({
 					status:200,
 					data: foundUser

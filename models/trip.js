@@ -3,8 +3,8 @@ const Park = require('./park')
 
 
 const tripSchema = new mongoose.Schema({
-	startDate: String,
-	endDate: String,
+	startDate: Date,
+	endDate: Date,
 	name: String,
 	parks: [{
 		type: mongoose.Schema.Types.ObjectId,
