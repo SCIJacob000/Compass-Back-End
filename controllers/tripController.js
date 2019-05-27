@@ -3,60 +3,41 @@ const router = express.Router();
 const Park = require('../models/park')
 const Trip = require('../models/trip')
 const User = require('../models/user')
+const session = require('express-session')
+const superagent = require('superagent')
 
 //post/ this route will add a park to a trip  
-router.post('/parks', async (req, res) => {
-	console.log("route has been hit!");
+router.post('/parks', async (req, res, next) => {
 	try{
-		console.log(req.query);
-
 		const parkCode = req.query.parkCode
-
-		const foundTrip = await Trip.findById(req.params.id);
-
-
-		// let created park;
-		// in db?
-		// if not create it, 
-
-		const extantPark = await Park.findOne({parkCode: parkCode});
-		if(extantPark){
-			const createdPark = extantPark;
-		} else {
-			//need to declare what parkCode is
-			const createdPark = await superagent.get(`https://developer.nps.gov/api/v1/campgrounds?parkCode=${parkCode}&api_key=${process.env.API_KEY}`)
-			.then(async (data)=>{
-
-				// build it; create it
-
+		// console.log(parkCode)
+		const foundTrip = await Trip.findOne({'name': req.body.trip});
+		// console.log(foundTrip)
+			await superagent.get(`https://developer.nps.gov/api/v1/parks?parkCode=${parkCode}&api_key=${process.env.API_KEY}`)
+			.then(async(data)=>{
+					res.status(200).json({
+						status: 200,
+						data: JSON.parse(data.text)
+					})
 				const newPark = {}; 
-
-				newPark.name = body.data[0].fullName
-				newPark.parkCode = body.data[0].parkCode
+				newPark.name = data.fullName
+				newPark.parkCode = data.parkCode
 				newPark.notes = []
 
 				const createdPark = await Park.create(newPark)
-
-				
-			}).catch((error)=>{
+				// console.log("This is the newly created park:");
+				// console.log(createdPark);
+				foundTrip.parks.push(createdPark)
+				await foundTrip.save()
+				// console.log("This is the trip the park got pushed to:");
+				// console.log(foundTrip);
+			}).catch((error, next)=>{
 				res.status(400).json({
 					status: 400,
 					error: error
 				})
-			})
-		}
-
-		if(foundTrip){
-			foundTrip.parks.push(createdPark);
-			
-			await foundTrip.save();
-		}
-
-
-		res.status(200).json({
-			status: 200,
-			data: foundTrip
-		})
+				
+			})		
 	}
 	catch(error){
 		res.status(400).json({
@@ -66,8 +47,11 @@ router.post('/parks', async (req, res) => {
 	}
 })
 //post/ this route will create a new trip and assign it to the logged in user!!!! note to self use session to find user! 
-router.post('/', async(req,res)=>{
+router.post('/', async(req, res)=>{
 
+	console.log("hitting trip post route")
+	console.log("req.body:");
+	console.log(req.body)
 
 	try{
 		const userDbEntry = {}
@@ -76,6 +60,9 @@ router.post('/', async(req,res)=>{
 		userDbEntry.endDate = req.body.endDate
 		userDbEntry.name = req.body.name
 		userDbEntry.parks = []
+
+		console.log("userDbEntry: ")
+		console.log(userDbEntry)
 
 		const createdTrip = await Trip.create(userDbEntry)
 		console.log(createdTrip);

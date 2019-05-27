@@ -50,9 +50,8 @@ const Note = require('../models/note')
 // 	})
 // })
 
-//get/parks/{parkCode}this calls the api to get all the info on a certain nat park
+//get/parks/{parkCode}this calls the api to get camping info on a certain nat park
 router.get('/camps', async(req,res)=>{
-	let searchTerm = req.query.parkCode
 	
 			try{
 				superagent.get(`https://developer.nps.gov/api/v1/campgrounds?parkCode=${searchTerm}&api_key=${process.env.API_KEY}`)
